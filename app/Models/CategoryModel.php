@@ -10,5 +10,4 @@ class CategoryModel extends Model
     use HasFactory;
 
     protected $table = 'categories';
-    
 }

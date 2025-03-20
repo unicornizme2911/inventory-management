@@ -1,6 +1,6 @@
 @extends('layouts.dashboard')
-@section('content')
 
+@section('content')
 <main class="app-main">
     <div class="app-content-header">
         <div class="container-fluid">
@@ -63,28 +63,40 @@
                                 <div class="col-lg-7">
                                     <form class="pl-lg-4">
                                         <div class="form-group">
-                                            <label for="productname">Product Name</label>
+                                            <label for="productName">Product Name</label>
                                             <input
-                                                    id="productname"
-                                                    name="productname"
+                                                    id="productName"
+                                                    name="productName"
                                                     type="text"
                                                     class="form-control form-control-lg"
                                                     placeholder="Enter product name"
                                             />
                                         </div>
 
-                                        <div class="form-group">
-                                            <label for="category">Category</label>
-                                            <select class="custom-select" id="category"></select>
+                                        <div class="form-group mt-2">
+                                            <label for="category">Category: </label>
+                                            <select class="form-select" id="category">
+                                                <option value="">Select Category Name</option>
+                                                @foreach($category as $key => $value)
+                                                    <option value="{{ $key }}">{{ $value }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+
+                                        <div class="form-group mt-2">
+                                            <label for="warehouse">Warehouse: </label>
+                                            <select class="form-select" id="warehouse">
+                                                <option value="">Select Warehouse Name</option>
+                                                @foreach($warehouse as $key => $value)
+                                                    <option value="{{ $key }}">{{ $value }}</option>
+                                                @endforeach
+                                            </select>
                                         </div>
 
                                         <!-- Product description -->
-                                        <div class="mt-2 d-flex product-figure" style="gap: 1.6rem">
+                                        <div class="mt-2 d-flex justify-content-between product-figure" style="gap: 1.6rem">
                                             <div class="item-figure">
-                                                <h6 class="font-14">Import Price:</h6>
-                                                <label class="sr-only" for="importPrice"
-                                                >Import price</label
-                                                >
+                                                <label class="sr-only font-14" for="importPrice">Import Price:</label>
                                                 <div class="input-group mb-2">
                                                     <input
                                                             type="number"
@@ -97,12 +109,9 @@
                                                         <div class="input-group-text">&nbsp;₫</div>
                                                     </div>
                                                 </div>
-                                                <span class="font-weight-bold text-primary">1 đ</span>
                                             </div>
                                             <div class="item-figure">
-                                                <h6 class="font-14">Retail Price:</h6>
-                                                <label class="sr-only" for="retailPrice"
-                                                >Retail Price</label
+                                                <label class="sr-only font-14" for="retailPrice">Retail Price:</label
                                                 >
                                                 <div class="input-group mb-2">
                                                     <input
@@ -116,11 +125,9 @@
                                                         <div class="input-group-text">&nbsp;₫</div>
                                                     </div>
                                                 </div>
-                                                <span class="font-weight-bold text-primary">1 đ</span>
                                             </div>
                                             <div class="">
-                                                <h6 class="font-14">Quantity:</h6>
-                                                <label class="sr-only" for="quantity">Quantity</label>
+                                                <label class="sr-only font-14" for="quantity">Quantity:</label>
                                                 <div class="input-group mb-2">
                                                     <input
                                                             type="number"
@@ -132,7 +139,6 @@
                                                 </div>
                                             </div>
                                         </div>
-
                                         <!-- Product description -->
                                         <div class="mt-2">
                                             <h6 class="font-14">Description:</h6>
@@ -152,4 +158,48 @@
         </div>
     </div>
 </main>
+{{-- Create Modal Category --}}
+<div class="modal fade" id="addCategoryModal" tabindex="-1" aria-labelledby="addCategoryModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addCategoryModalLabel">Add Category</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="CategoryForm">
+                    @csrf
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Name</label>
+                        <input type="text" class="form-control" id="name" name="name" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </form> <!--end::Form-->
+            </div>
+        </div>
+    </div>
+</div>
+{{-- Confirm Modal --}}
+<div id="confirmAddModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="standard-modalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header modal-colored-header bg-success">
+                <h4 class="modal-title" id="standard-modalLabel">Confirm Add Product</h4>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to add this product?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary button-confirm">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+{{-- End Modal Category --}}
+<div class="flashMassage alert alert-success" style="display: none;"></div>
 @endsection
+
+@push('scripts')
+    @vite('resources/js/add-product.js')
+@endpush

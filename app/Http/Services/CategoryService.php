@@ -6,24 +6,23 @@ use App\Models\CategoryModel;
 use App\Traits\ResponseAPI;
 use App\Http\Resources\CategoryResource;
 
-class CategoryService
+class CategoryService extends BaseService
 {
     use ResponseAPI;
+
+    public function __construct()
+    {
+        parent::__construct(CategoryModel::class, CategoryResource::class);
+    }
 
     public function show($id)
     {
         $category = CategoryModel::findorFail($id);
-        if (!$category) 
+        if (!$category)
         {
             return null;
         }
         return new CategoryResource($category);
-    }
-
-    public function getCategories()
-    {
-        $categories = CategoryModel::all();
-        return CategoryResource::collection($categories);
     }
 
     public function store($request)
@@ -40,7 +39,7 @@ class CategoryService
     public function update($request, $id)
     {
         $category = CategoryModel::findorFail($id);
-        if (!$category) 
+        if (!$category)
         {
             return null;
         }
@@ -52,7 +51,7 @@ class CategoryService
     public function destroy($id)
     {
         $category = CategoryModel::findorFail($id);
-        if (!$category) 
+        if (!$category)
         {
             return null;
         }

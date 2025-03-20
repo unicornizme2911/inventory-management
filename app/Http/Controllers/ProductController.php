@@ -2,32 +2,30 @@
 
 namespace App\Http\Controllers;
 
+use App\Traits\ResponseAPI;
 use Illuminate\Http\Request;
 use App\Models\ProductModel;
-use Auth;
+use App\Models\CategoryModel;
+use App\Models\WarehouseModel;
+use App\Http\Services\ProductService;
 
 class ProductController extends Controller
 {
+    use ResponseAPI;
+    private $productService;
+    public function __construct(ProductService $productService)
+    {
+        $this->productService = $productService;
+    }
     public function index()
     {
-        return view("product.add-edit");
+        $warehouse = WarehouseModel::all()->pluck('name', 'id');
+        $category = CategoryModel::all()->pluck('name', 'id');
+        return view("product.add-edit", compact('category', 'warehouse'));
     }
-    public function addProduct(Request $request){
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'price' => 'required|numeric',
-            'category_id' => 'required|string|max:255',
-        ]);
-        $product = new ProductModel();
-        $product->image = $request->image;
-        $product->name = $request->name;
-        $product->import_price = $request->import_price;
-        $product->retail_price = $request->retail_price;
-        $product->quantity = $request->quantity;
-        $product->description = $request->description;
-        $product->category_id = $request->category_id;
-        $product->save();
-        return response()->json(['message' => 'Product added successfully']);
+    public function store(Request $request){
+        $product = $this->productService->store($request);
+        return $product ? $this->success('Product created successfully', $product) : $this->error('Product not created', 500);
     }
     public function getProducts(){
         $products = ProductModel::all();

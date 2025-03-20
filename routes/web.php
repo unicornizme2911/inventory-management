@@ -15,7 +15,7 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 
 Route::group(['middleware' => 'admin', 'prefix' => 'admin'], function () {
     Route::get('/dashboard', [App\Http\Controllers\DashboardController::class, 'dashboard']);
-    Route::get('/category/all', [App\Http\Controllers\CategoryController::class, 'getCategories']);
+    Route::get('/category/all', [App\Http\Controllers\CategoryController::class, 'getAll']);
     Route::resource('category', CategoryController::class);
     Route::resource('product', ProductController::class);
 });

@@ -30,12 +30,12 @@ class CategoryController extends Controller
         return $category ? $this->success('Category created successfully', $category) : $this->error('Category not created', 500);
     }
 
-    public function getCategories()
+    public function getAll()
     {
-        $categories = $this->categoryService->getCategories();
+        $categories = $this->categoryService->getAll();
         return $categories ? $this->success('Categories retrieved successfully', $categories) : $this->error('Categories not found', 404);
     }
-    
+
     public function show(Request $request, $id)
     {
         $category = $this->categoryService->show($id);
