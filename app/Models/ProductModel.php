@@ -12,8 +12,13 @@ class ProductModel extends Model
         'name',
         'import_price',
         'retail_price',
-        'quantity',
         'description',
         'category_id',
     ];
+    public function category(){
+        return $this->belongsTo(CategoryModel::class, 'category_id');
+    }
+    public function warehouses(){
+        return $this->belongsToMany(WarehouseModel::class, 'inventories', 'product_id', 'warehouse_id')->withPivot('quantity');
+    }
 }

@@ -19,28 +19,37 @@ class ProductController extends Controller
     }
     public function index()
     {
+        return view('product.list');
+    }
+    public function addProductView(){
         $warehouse = WarehouseModel::all()->pluck('name', 'id');
         $category = CategoryModel::all()->pluck('name', 'id');
         return view("product.add-edit", compact('category', 'warehouse'));
+    }
+    public function editProductView($id){
+        $product = $this->productService->show($id);
+//        return response()->json($product);
+        $warehouse = WarehouseModel::all()->pluck('name', 'id');
+        $category = CategoryModel::all()->pluck('name', 'id');
+        return view("product.add-edit", compact( 'product', 'category', 'warehouse'));
     }
     public function store(Request $request){
         $product = $this->productService->store($request);
         return $product ? $this->success('Product created successfully', $product) : $this->error('Product not created', 500);
     }
-    public function getProducts(){
-        $products = ProductModel::all();
-        return response()->json($products);
+    public function getAll(){
+        $products = $this->productService->getAll();
+        return $products ? $this->success('Products retrieved successfully', $products) : $this->error('Products not found', 404);
     }
-    public function getProductById(Request $request){
-        $product = ProductModel::find($request->id);
-        return response()->json($product);
+    public function show(Request $request, $id){
+        $product = $this->productService->show($id);
+        return $product ? $this->success('Product retrieved successfully', $product) : $this->error('Product not found', 404);
     }
-    public function editProduct(Request $request){
-        $product = ProductModel::find($request->id);
-        $product->name = $request->name;
-        $product->price = $request->price;
-        $product->category_id = $request->category_id;
-        $product->save();
-        return response()->json(['message' => 'Product updated successfully']);
+    public function search(Request $request, $name){
+        $product = $this->productService->search($name);
+        return $product ? $this->success('Product retrieved successfully', $product) : $this->error('Product not found', 404);
+    }
+    public function update(Request $request){
+        return;
     }
 }

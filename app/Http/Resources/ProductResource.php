@@ -17,8 +17,20 @@ class ProductResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'price' => $this->price,
-            'category_id' => $this->category_id,
+            'image' => $this->image,
+            'import_price' => $this->import_price,
+            'retail_price' => $this->retail_price,
+            'description' => $this->description,
+            'category' => $this->category,
+            'warehouses' => $this->warehouses->map(function($warehouse){
+                return [
+                    'id' => $warehouse->id,
+                    'name' => $warehouse->name,
+                    'quantity' => $warehouse->pivot->quantity,
+                ];
+            })->toArray(),
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
         ];
     }
 }

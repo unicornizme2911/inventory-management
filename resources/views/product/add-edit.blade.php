@@ -40,12 +40,21 @@
                                             class="text-center d-block mb-2"
                                             style="border: 2px dashed #ddd"
                                     >
+                                        @if(isset($product) && $product->image)
+                                            <img
+                                                src="{{ resource_path('uploads/products/' . $product->image) }}"
+                                                class="img-fluid image-preview py-1"
+                                                style="max-width: 280px"
+                                                alt="Product-img"
+                                            />
+                                        @else
                                         <img
                                                 src="/images/no-image-available.png"
                                                 class="img-fluid image-preview py-1"
                                                 style="max-width: 280px"
                                                 alt="Product-img"
                                         />
+                                        @endif
                                     </a>
                                     <!-- upload image btn -->
                                     <div class="image-upload">
@@ -61,7 +70,15 @@
                                 </div>
                                 <!-- end col -->
                                 <div class="col-lg-7">
-                                    <form class="pl-lg-4">
+                                    <form class="pl-lg-4"
+                                          action="{{ isset($product) ? route('product.update', $product->id) : route('product.store') }}"
+                                          method="POST"
+                                          enctype="multipart/form-data"
+                                    >
+                                        @csrf
+                                        @if(isset($product))
+                                            @method('PUT')
+                                        @endif
                                         <div class="form-group">
                                             <label for="productName">Product Name</label>
                                             <input
@@ -70,6 +87,7 @@
                                                     type="text"
                                                     class="form-control form-control-lg"
                                                     placeholder="Enter product name"
+                                                    value="{{ isset($product) ? $product->name : '' }}"
                                             />
                                         </div>
 
@@ -78,7 +96,7 @@
                                             <select class="form-select" id="category">
                                                 <option value="">Select Category Name</option>
                                                 @foreach($category as $key => $value)
-                                                    <option value="{{ $key }}">{{ $value }}</option>
+                                                    <option value="{{ $key }}" {{ isset($product) && $product->category_id == $key ? 'selected' : '' }}>{{ $value }}</option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -88,7 +106,7 @@
                                             <select class="form-select" id="warehouse">
                                                 <option value="">Select Warehouse Name</option>
                                                 @foreach($warehouse as $key => $value)
-                                                    <option value="{{ $key }}">{{ $value }}</option>
+                                                    <option value="{{ $key }}" {{ isset($product) && $product->warehouses[0]->id == $key ? 'selected' : '' }}>{{ $value }}</option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -103,7 +121,7 @@
                                                             class="form-control"
                                                             id="importPrice"
                                                             min="1"
-                                                            value="1"
+                                                            value= "{{ isset($product) ? $product->import_price : '1' }}"
                                                     />
                                                     <div class="input-group-prepend">
                                                         <div class="input-group-text">&nbsp;₫</div>
@@ -119,7 +137,7 @@
                                                             class="form-control"
                                                             id="retailPrice"
                                                             min="1"
-                                                            value="1"
+                                                            value= "{{ isset($product) ? $product->retail_price : '1' }}"
                                                     />
                                                     <div class="input-group-prepend">
                                                         <div class="input-group-text">&nbsp;₫</div>
@@ -134,7 +152,7 @@
                                                             class="form-control"
                                                             id="quantity"
                                                             min="1"
-                                                            value="1"
+                                                            value= "{{ isset($product) ? $product->warehouses[0]->quantity : 1 }}"
                                                     />
                                                 </div>
                                             </div>
@@ -146,6 +164,8 @@
                                                     class="form-control"
                                                     rows="4"
                                                     id="description"
+                                                    placeholder="Enter some description"
+                                                    value="{{ isset($product) ? $product->description : "" }}"
                                             ></textarea>
                                         </div>
                                     </form>
@@ -199,7 +219,7 @@
 {{-- End Modal Category --}}
 <div class="flashMassage alert alert-success" style="display: none;"></div>
 @endsection
-
 @push('scripts')
-    @vite('resources/js/add-product.js')
+    @vite('resources/js/products/add-product.js')
 @endpush
+

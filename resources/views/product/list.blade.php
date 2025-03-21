@@ -1,6 +1,6 @@
 @extends('layouts.dashboard')
 @section('content')
-<main class="app-main"> 
+<main class="app-main">
     <div class="app-content-header"> <!--begin::Container-->
         <div class="container-fluid"> <!--begin::Row-->
             <div class="row">
@@ -20,158 +20,87 @@
     </div>
 
     <div class="app-content"> <!--begin::Container-->
-        <div class="container-fluid"> <!--begin::Row-->
+        <div class="container-fluid my-3">
             <div class="row">
-                <div class="col-md-12">
-                    <div class="card mb-4">
-                        <div class="card-header">
-                            <h4 class="card-title">Product List</h4>
-                            <div class="card-tools">
-                                <ul class="pagination pagination-sm float-end">
-                                    <a href="#" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#addCategoryModal">
-                                        Add Product
-                                    </a>
-                                </ul>
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row mb-2">
+                                <div class="col-sm-4">
+                                    <a href="/admin/product/add" class="btn btn-danger mb-2"
+                                    ><i class="mdi mdi-plus-circle mr-2"></i> Add Products</a
+                                    >
+                                </div>
+                            </div>
+
+                            <div class="table-responsive">
+                                <table
+                                    class="table table-centered w-100 dt-responsive nowrap"
+                                    id="products-datatable"
+                                >
+                                    <thead class="thead-light">
+                                    <tr>
+                                        <th class="all">Product</th>
+                                        <th>Category</th>
+                                        <th>Warehouse</th>
+                                        <th>Quantity</th>
+                                        <th>Import Price</th>
+                                        <th>Retail Price</th>
+                                        <th>Added Date</th>
+                                        <th style="width: 85px">Action</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
-                        <div class="card-body table-responsive">
-                            <table class="table table-centered w-100 dt-responsive nowrap" id="categoryTable">
-                                <thead class="thead-light">
-                                    <tr>
-                                        <th class="text-center">#</th>
-                                        <th>Image</th>
-                                        <th>Name</th>
-                                        <th>Type</th>
-                                        <th>Added Date</th>
-                                        <th>Imported Price</th>
-                                        <th>Retail Price</th>
-                                        <th>Quantity</th>
-                                        <th class="text-center" style="width: 120px;">Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                </tbody>
-                            </table>
-                        </div>
+                        <!-- end card-body-->
                     </div>
+                    <!-- end card-->
                 </div>
-            </div> <!--end::Row-->
-        </div> <!--end::Container-->
+                <!-- end col -->
+            </div>
+            <!-- end row -->
+        </div>
     </div>
 </main>
+<div
+    id="confirmDeleteModal"
+    class="modal fade"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="danger-header-modalLabel"
+    aria-hidden="true"
+>
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header modal-colored-header bg-danger">
+                <h4 class="modal-title" id="danger-header-modalLabel">Confirm delete product</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            </div>
+            <div class="modal-body"></div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-danger btn-confirm">Confirm</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
 <!-- Flash Message -->
 <div class="flashMassage alert alert-success" style="display: none;"></div>
-
-
-<!-- jquery -->
-<script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- DataTables CSS -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+<!-- DataTables JS -->
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <!-- dayjs -->
 <script src="https://cdn.jsdelivr.net/npm/dayjs@1.10.7/dayjs.min.js"></script>
-<!-- category js -->
-<script type="text/javascript">
-    $(document).ready(function() {
-        fetchCategories();
-    });
-    function fetchCategories() {
-        $.ajax({
-            url: '/admin/product/all',
-            type: 'GET',
-            success: function(response) {
-                let tableBody = '';
-                response.forEach((product, index) => {
-                    tableBody += `
-                        <tr>
-                            <td class="text-center">${index + 1}</td>
-                            <td>
-                                <img src="${product.image}" alt="${product.name}" class="rounded" height="50">
-                            </td>
-                            <td>${product.name}</td>
-                            <td>${product.type}</td>
-                            <td>${dayjs(product.added_date).format('DD MMM, YYYY')}</td>
-                            <td>${product.imported_price}</td>
-                            <td>${product.retail_price}</td>
-                            <td>${product.quantity}</td>
-                            <td class="text-center">
-                                <button class="btn btn-sm btn-primary edit-product" data-id="${product.id}">
-                                    <i class="bi bi-pencil-square"></i>
-                                </button>
-                                <button class="btn btn-sm btn-danger delete-product" data-id="${product.id}">
-                                    <i class="bi bi-trash2"></i>
-                                </button>
-                            </td>
-                        </tr>
-                    `;
-                });
-                $('table tbody').html(tableBody);
-                $('.edit-product').click(handleEditProduct);
-                $('.delete-product').click(handleDeleteProduct);
-            },
-            error: function(xhr, status, error) {
-                console.log(xhr.responseText);
-            }
-        });
-    }
-    // Edit product
-    function handleEditProduct() {
-        let productId = $(this).data('id');
-        $.ajax({
-            url: `/admin/product/${productId}`,
-            type: 'GET',
-            success: function(response) {
-                $('#name').val(response.name);
-                $('#addProductModal').modal('show');
-                $('#ProductForm').off('submit').on('submit', function(e){
-                    e.preventDefault();
-                    let formData = $(this).serialize();
-                    $.ajax({
-                        url: `/admin/product/edit/${productId}`,
-                        type: 'PUT',
-                        data: formData,
-                        success: function(response) {
-                            $('#addProductModal').modal('hide');
-                            $('#ProductForm')[0].reset();
-                            $('.flashMassage')
-                                .text(response.message)
-                                .fadeIn()
-                                .delay(3000)
-                                .fadeOut();
-                                setTimeout(() => {
-                                    location.reload();
-                                }, 2000);
-                        },
-                        error: function(xhr, status, error) {
-                            console.log(xhr.responseText);
-                        }
-                    });
-                })
-            },
-            error: function(xhr, status, error) {
-                console.log(xhr.responseText);
-            }
-        });
-    }
-    // Delete product
-    function handleDeleteCategory() {
-        let categoryId = $(this).data('id');
-        $.ajax({
-            url: `/admin/category/delete/${categoryId}`,
-            type: 'GET',
-            success: function(response) {
-                console.log(response);
-                $('.flashMassage')
-                    .text(response.message)
-                    .fadeIn()
-                    .delay(3000)
-                    .fadeOut();
-                setTimeout(() => {
-                    location.reload();
-                }, 2000);
-            },
-            error: function(xhr, status, error) {
-                console.log(xhr.responseText);
-            }
-        });
-    }
-</script>
+<!-- product js -->
+@push('scripts')
+    @vite('resources/js/products/list-product.js')
+@endpush
 @endsection
 
