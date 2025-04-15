@@ -6,25 +6,36 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-12 d-flex justify-content-between my-2">
-                    <h4 class="page-title">Add Product</h4>
+                    <h4 class="page-title">{{ isset($product) ? "Edit Product" : "Add Product"}}</h4>
 
                     <div>
-                        <button
+                        @if(isset($product))
+                            <button
+                                    type="button"
+                                    class="btn btn-primary waves-effect waves-light"
+                                    id="button-update-product"
+                                    data-id="{{ $product->id }}"
+                            >
+                                <i class="mdi mdi-content-save mr-1"></i> Update Product
+                            </button>
+                        @else
+                            <button
                                 type="button"
                                 class="btn btn-outline-primary waves-effect waves-light mx-3"
                                 id="button-add-category"
                                 data-toggle="modal"
                                 data-target="#addCategoryModal"
-                        >
-                            <i class="mdi mdi-plus mr-1"></i>New Category
-                        </button>
-                        <button
-                                type="button"
-                                class="btn btn-success waves-effect waves-light"
-                                id="button-add-product"
-                        >
-                            <i class="mdi mdi-plus mr-1"></i> Add New Product
-                        </button>
+                            >
+                                <i class="mdi mdi-plus mr-1"></i>New Category
+                            </button>
+                            <button
+                                    type="button"
+                                    class="btn btn-success waves-effect waves-light"
+                                    id="button-add-product"
+                            >
+                                <i class="mdi mdi-plus mr-1"></i> Add New Product
+                            </button>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -42,7 +53,7 @@
                                     >
                                         @if(isset($product) && $product->image)
                                             <img
-                                                src="{{ resource_path('uploads/products/' . $product->image) }}"
+                                                src="{{ asset('uploads/products/' . $product->image) }}"
                                                 class="img-fluid image-preview py-1"
                                                 style="max-width: 280px"
                                                 alt="Product-img"
@@ -152,7 +163,7 @@
                                                             class="form-control"
                                                             id="quantity"
                                                             min="1"
-                                                            value= "{{ isset($product) ? $product->warehouses[0]->quantity : 1 }}"
+                                                            value= "{{ isset($product) ? $product->warehouses[0]->pivot->quantity : 0 }}"
                                                     />
                                                 </div>
                                             </div>
@@ -204,10 +215,12 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header modal-colored-header bg-success">
-                <h4 class="modal-title" id="standard-modalLabel">Confirm Add Product</h4>
+                <h4 class="modal-title" id="standard-modalLabel">
+                    {{ isset($product) ? "Confirm Add Product" : "Confirm Edit Product"}}
+                </h4>
             </div>
             <div class="modal-body">
-                <p>Are you sure you want to add this product?</p>
+
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-light" data-dismiss="modal">Close</button>

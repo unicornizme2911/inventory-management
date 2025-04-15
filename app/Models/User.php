@@ -59,4 +59,9 @@ class User extends Authenticatable
         }
         return "employee";
     }
+
+    function orders()
+    {
+        return $this->hasMany(OrderModel::class, 'user_id', 'id');
+    }
 }

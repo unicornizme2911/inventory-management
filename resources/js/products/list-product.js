@@ -22,7 +22,7 @@ function fetchProducts() {
                         <td>${product.retail_price} VNĐ</td>
                         <td>${dayjs(product.created_at)}</td>
                         <td>
-                            <button class="btn btn-primary">Edit</button>
+                            <a class="btn btn-primary" href="/admin/product/edit/${product.id}">Edit</a>
                             <button class="btn btn-danger">Delete</button>
                         </td>
                     </tr>

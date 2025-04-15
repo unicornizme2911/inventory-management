@@ -27,9 +27,8 @@
                         <div class="card-body">
                             <div class="row mb-2">
                                 <div class="col-sm-4">
-                                    <a href="/admin/product/add" class="btn btn-danger mb-2"
-                                    ><i class="mdi mdi-plus-circle mr-2"></i> Add Products</a
-                                    >
+                                    <a href="/admin/product/add" class="btn btn-danger mb-2">
+                                        <i class="mdi mdi-plus-circle mr-2"></i> Add Products</a>
                                 </div>
                             </div>
 

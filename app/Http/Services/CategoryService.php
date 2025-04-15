@@ -38,11 +38,10 @@ class CategoryService extends BaseService
 
     public function update($request, $id)
     {
+        $request->validate([
+            'name' => 'required|string|max:255',
+        ]);
         $category = CategoryModel::findorFail($id);
-        if (!$category)
-        {
-            return null;
-        }
         $category->name = $request->name;
         $category->save();
         return new CategoryResource($category);

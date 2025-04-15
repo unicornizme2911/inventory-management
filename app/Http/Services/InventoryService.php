@@ -2,6 +2,7 @@
 
 namespace App\Http\Services;
 
+use App\Http\Repositories\InventoryRepository;
 use App\Http\Resources\InventoryResource;
 use App\Models\InventoryModel;
 use App\Models\ProductModel;
@@ -11,8 +12,10 @@ use App\Traits\ResponseAPI;
 class InventoryService extends BaseService
 {
     use ResponseAPI;
-    public function __construct(){
+    private $inventoryRepository;
+    public function __construct(InventoryRepository $inventoryRepository){
         parent::__construct(InventoryModel::class, InventoryResource::class);
+        $this->inventoryRepository = $inventoryRepository;
     }
     public function store($request){
         $request->validate([
@@ -20,14 +23,10 @@ class InventoryService extends BaseService
             'quantity' => 'required|numeric',
             'warehouse_id' => 'required',
         ]);
-        if(!ProductModel::findorFail($request->product_id) || !WarehouseModel::findorFail($request->warehouse_id)){
+        if(!ProductModel::find($request->product_id) || !WarehouseModel::find($request->warehouse_id)){
             return null;
         }
-        $inventory = new InventoryModel();
-        $inventory->product_id = $request->product_id;
-        $inventory->quantity = $request->quantity;
-        $inventory->warehouse_id = $request->warehouse_id;
-        $inventory->save();
+        $inventory = $this->inventoryRepository->store($request);
         return new InventoryResource($inventory);
     }
 }

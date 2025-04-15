@@ -10,4 +10,9 @@ class InventoryModel extends Model
     use HasFactory;
 
     protected $table = 'inventories';
+    protected $fillable = [
+        'product_id',
+        'warehouse_id',
+        'quantity'
+    ];
 }

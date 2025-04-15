@@ -19,6 +19,15 @@ class ProductModel extends Model
         return $this->belongsTo(CategoryModel::class, 'category_id');
     }
     public function warehouses(){
-        return $this->belongsToMany(WarehouseModel::class, 'inventories', 'product_id', 'warehouse_id')->withPivot('quantity');
+        return $this->belongsToMany(WarehouseModel::class, 'inventories', 'product_id', 'warehouse_id')
+            ->withPivot('quantity');
+    }
+    public function transactions(){
+        return $this->belongsToMany(TransactionModel::class, 'transaction_details', 'product_id', 'transaction_id')
+            ->withPivot('quantity', 'total_price');
+    }
+    public function orders(){
+        return $this->belongsToMany(OrderModel::class, 'order_details', 'product_id', 'order_id')
+            ->withPivot('quantity', 'unit_price', 'total_price');
     }
 }
